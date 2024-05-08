@@ -1,50 +1,49 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { createStackNavigator } from '@react-navigation/stack';
-import LaptopScreen from './screens/LaptopScreen';
-import LaptopDetailScreen from './screens/LaptopDetailScreen';
-import CartScreen from './screens/CartScreen';
-import CartIcon from './components/CartIcon';
 import { CartProvider } from './context';
 import { useCart } from './context';
-import { MaterialIcons } from '@expo/vector-icons';
+import LoginScreen from './screens/LoginScreen';
+import RegisterScreen from './screens/RegisterScreen';
+import Tabs from './screens/AppScreen';
+import ForgotPasswordScreen from './screens/ForgetPasswordScreen';
 
 const Tab = createBottomTabNavigator();
-const Stack = createStackNavigator();
 
 
-const LaptopStack = () => {
-  return (
-    <Stack.Navigator>
-      <Stack.Screen name="Laptop" component={LaptopScreen} />
-      <Stack.Screen name="LaptopDetail" component={LaptopDetailScreen} />
-    </Stack.Navigator>
-  );
-};
-
-function Tabs() {
-  const {cartItems} = useCart()
+const LoginStack = () => {
   return (
     <NavigationContainer>
       <Tab.Navigator>
-        <Tab.Screen name="Laptops" component={LaptopStack} options={{ headerShown: false,tabBarIcon: ({ color, size }) => <MaterialIcons name="laptop" size={24} color="black" />, }} />
-        <Tab.Screen
-          name="Cart"
-          component={CartScreen}
-          options={{
-            tabBarIcon: ({ color, size }) => <CartIcon count={cartItems.length} />,
-          }}
-        />
+        <Tab.Screen name="Login" component={LoginScreen} options={{
+          headerShown: false, tabBarStyle: {
+            display: 'none',
+          },
+        }} />
+        <Tab.Screen name="Register" component={RegisterScreen} options={{
+          headerShown: false, tabBarStyle: {
+            display: 'none',
+          },
+        }} />
+        <Tab.Screen name="ForgetPassword" component={ForgotPasswordScreen} options={{
+          headerShown: false, tabBarStyle: {
+            display: 'none',
+          },
+        }} />
+        <Tab.Screen name="App" component={Tabs} options={{
+          headerShown: false, tabBarStyle: {
+            display: 'none',
+          },
+        }} />
       </Tab.Navigator>
     </NavigationContainer>
   );
-}
+};
 
 export default function App() {
   return (
     <CartProvider>
-      <Tabs />
+      <LoginStack />
     </CartProvider>
   );
 }

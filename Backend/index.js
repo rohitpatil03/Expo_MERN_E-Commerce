@@ -3,6 +3,7 @@ import express from 'express';
 import cors from 'cors'
 import bodyParser  from 'body-parser';
 import cartRouter from './routes/cart.js';
+import authRouter from './routes/auth.js'
 import productRouter from './routes/product.js'
 import { connect} from 'mongoose';
 
@@ -19,6 +20,7 @@ app.use(bodyParser.urlencoded({ extended: false }));
 //routes
 app.use('/api', cartRouter);
 app.use('/api', productRouter);
+app.use('/api', authRouter)
 
 connect(process.env.MONGO_URI).then(() => {
     console.log('Mongoose connect success.')

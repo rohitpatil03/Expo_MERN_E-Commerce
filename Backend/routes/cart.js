@@ -2,14 +2,14 @@ import express from 'express'
 const router = express.Router();
 import Item from '../models/item.js'
 import Product from '../models/product.js';
-
+import isAuthenticated from '../middlewares/authMiddleware.js';
 
 
 
 // Get all items
-router.get('/cart', async(req, res)=>{
+router.get('/cart', isAuthenticated, async(req, res)=>{
     try{
-        const items = await Item.find({})
+        const items = await Item.find({username:req.username})
         res.status(200).json(items)
     }
     catch(e){
@@ -19,11 +19,12 @@ router.get('/cart', async(req, res)=>{
 })
 
 // Create a new item
-router.post('/cart', async (req, res) => {
+router.post('/cart', isAuthenticated, async (req, res) => {
     const { asin, name, url, image, price_string, total_reviews, stars } = req.body;
 
     try {
         const newItem = new Item({
+            username:req.username,
             asin,
             name,
             url,
@@ -43,10 +44,10 @@ router.post('/cart', async (req, res) => {
 
 
 // Remove an item
-router.post('/cart/:asin', async (req, res) => {
+router.post('/cart/:asin', isAuthenticated, async (req, res) => {
 
     try {
-        const deletedItem = await Item.findOneAndDelete({ asin:req.params.asin });
+        const deletedItem = await Item.findOneAndDelete({ asin:req.params.asin,username:req.username });
         if (!deletedItem) {
             return res.status(404).json({ message: 'Item not found' });
         }
@@ -59,9 +60,9 @@ router.post('/cart/:asin', async (req, res) => {
 
 
 // Delete all item
-router.delete('/cart/:asin', async (req, res) => {
+router.delete('/cart/:asin',isAuthenticated, async (req, res) => {
     try {
-        await Item.deleteMany({asin:req.params.asin});
+        await Item.deleteMany({asin:req.params.asin, username:req.username});
         res.json({ message: 'Item deleted' });
     } catch (err) {
         res.status(500).json({ message: err.message });
@@ -70,9 +71,9 @@ router.delete('/cart/:asin', async (req, res) => {
 
 
 // clear the cart
-router.post('/clear', async (req, res) => {
+router.post('/clear',isAuthenticated, async (req, res) => {
     try {
-        await Item.deleteMany({});
+        await Item.deleteMany({username:req.username});
         res.json({ message: 'Item deleted' });
     } catch (err) {
         res.status(500).json({ message: err.message });
