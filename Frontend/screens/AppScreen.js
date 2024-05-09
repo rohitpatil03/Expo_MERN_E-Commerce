@@ -38,7 +38,7 @@ const LaptopStack = () => {
 };
 
 function Tabs() {
-  const { cartItems } = useCart()
+  const { cartItems, deleteAsyncStorageData } = useCart()
   return (
     <NavigationContainer independent={true}>
       <Tab.Navigator>
